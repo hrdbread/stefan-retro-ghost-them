@@ -1,0 +1,22 @@
+{
+  "name": "stefan-retro-portfolio",
+  "description": "A retro dark mode portfolio theme for Ghost CMS",
+  "demo": "https://retro-vibes-time-capsule.lovable.app",
+  "version": "1.0.0",
+  "engines": {
+    "ghost": ">=5.0.0"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Stefan Twerdochlib",
+    "email": "stefan@twerdochlib.com",
+    "url": "https://twerdochlib.com"
+  },
+  "keywords": [
+    "dark",
+    "retro",
+    "portfolio",
+    "neon",
+    "design"
+  ]
+}
