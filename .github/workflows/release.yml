@@ -1,0 +1,69 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Get tag name
+      id: tag
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+    - name: Create theme package
+      run: |
+        # Remove development files
+        rm -rf .git .github README.md .gitignore LICENSE
+        
+        # Create zip package
+        zip -r stefan-retro-theme-${{ steps.tag.outputs.TAG_NAME }}.zip . \
+          -x "*.DS_Store*" "node_modules/*" "*.log*"
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Stefan Retro Theme ${{ steps.tag.outputs.TAG_NAME }}
+        body: |
+          ## What's New in ${{ steps.tag.outputs.TAG_NAME }}
+          
+          ### 🎨 Features
+          - Dark mode design with neon pink accents
+          - Retro typography and animations
+          - Full Ghost CMS compatibility
+          - Responsive and accessible design
+          
+          ### 📦 Installation
+          1. Download `stefan-retro-theme-${{ steps.tag.outputs.TAG_NAME }}.zip`
+          2. Upload to Ghost Admin → Design → Upload Theme
+          3. Activate and enjoy!
+          
+          ### 🔧 Requirements
+          - Ghost v5.0 or higher
+          - Modern browser support
+          
+          ---
+          
+          **Full changelog and documentation available in the repository.**
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./stefan-retro-theme-${{ steps.tag.outputs.TAG_NAME }}.zip
+        asset_name: stefan-retro-theme-${{ steps.tag.outputs.TAG_NAME }}.zip
+        asset_content_type: application/zip
